@@ -33,16 +33,21 @@ global time_stopp
 
 
 # z Variable fuer das Gyroskop.
-z = 0            
+z = 0         
+
+# GPIO-Ports Ultrasonic Sensor 1 (center)
+gpioEcho1 = 23
+gpioTrigger1 = 24
+	
+# GPIO-Ports Ultrasonic Sensor 2 (right)
+gpioEcho2 = 23
+gpioTrigger2 = 24   
       
  
-def calc_distance():
+def calc_distance(gpioEcho, gpioTrigger):
 		
-	gpioEcho = 23
-	gpioTrigger = 24
 	calc_range = 0
-	
-	
+		
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(gpioTrigger, GPIO.OUT)
 	GPIO.setup(gpioEcho, GPIO.IN)
@@ -142,10 +147,10 @@ def turn_robot(value):
       # Auto und die aktuelle Drehung.
       os.system('clear')      
       print "########### Drehen ###########"
-      print "Aktuelle Gradzahl der Drehung:      ", z
-      print "Verbleibende Gradzahl bis zum Ziel: ", turn_delta	  
+      print "Aktuelle Gradzahl der Drehung:      %1.f" % z
+      print "Verbleibende Gradzahl bis zum Ziel: %1.f" % turn_delta	 
 
-      print "Programm Ende in ", time_stopp - time.time(), " sec."
+      print "Programm Ende in %1.f" % (time_stopp - time.time()), "sec."
       print "Geschwindigkeit ", speed
       time.sleep(0.02)
 
@@ -201,8 +206,11 @@ def control():
    ############################ ENDE ############################
    
    while stopp_control == 0:   
-      # startet die Messung für den Sensor mit sensor_v.
-      dist = calc_distance()
+      # startet die Messung für den Sensor 1.
+      dist = calc_distance(gpioEcho1, gpioTrigger1)
+      
+      # startet die Messung für den Sensor 1.
+      #dist2 = calc_distance(gpioEcho2, gpioTrigger2)
 
       if min_dist + 20 <= dist <= min_dist + 35:
          speed = 0.5
@@ -241,9 +249,9 @@ def control():
 	  # Geschwindigkeit und verbleibenden Programmlaufzeit.
       os.system('clear')
       print "########### Fahren ###########"
-      print "Abstand:          ", dist, " cm"
+      print "Abstand:            %1.f" % dist,"cm"
       print "Geschwindigkeit:  ", speed
-      print "Programmlaufzeit: ",round(time_stopp - time.time(),1)," s"
+      print "Programmlaufzeit: ",round(time_stopp - time.time(),1),"s"
       
       time.sleep(0.04)
 
